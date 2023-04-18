@@ -1,0 +1,52 @@
+﻿@model caa_mis.Models.Event
+
+@{
+    ViewData["Title"] = "Create An Event";
+}
+
+<h1>Create New Event</h1>
+<hr />
+   
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" name="TransactionStatusID" id="TransactionStatusID" value="1">
+    <div class="container">
+        <div class="row">
+            <div class="col col-lg-3 mb-6">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="e.g. Chrismas Eve" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="col col-lg-3 mb-6">
+                <label asp-for="Date" class="control-label">Event Date Date</label>
+                <input asp-for="Date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row">
+         
+            <div class="col col-lg-3 mb-6">
+                <label asp-for="BranchID" class="control-label">Origin Branch</label>
+                <select asp-for="BranchID" class="form-control" asp-items="ViewBag.BranchID"></select>
+            </div>
+            <div class=" col col-lg-3 mb-6">
+                <label asp-for="EmployeeID" class="control-label">Employee</label>
+                <select asp-for="EmployeeID" class="form-control" asp-items="ViewBag.EmployeeID"></select>
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class=" col col-lg-3 mb-6">
+                <br />
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+    </div>
+    
+</form>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

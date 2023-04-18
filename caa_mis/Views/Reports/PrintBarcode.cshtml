@@ -1,0 +1,43 @@
+﻿@model IEnumerable<caa_mis.Models.Item>
+
+@{
+    ViewData["Title"] = "Print Barcodes";
+
+}
+<h4>@ViewData["Title"]</h4>
+<div class="container">
+    @if (TempData.ContainsKey("ErrorMessage"))
+    {
+        <span class="text-danger">@TempData["ErrorMessage"]</span>
+    }
+    <p class="float-end"><a asp-action="GenerateBarcode" class="btn btn-secondary ">Return to Barcode Filters</a>
+        <button onclick="window.print()" class="btn btn-secondary">Print</button>
+    </p>
+
+    @if (Model != null)
+    {
+        @foreach (var item in Model)
+        {
+
+            <h4>@Html.DisplayFor(modelItem => item.Name)</h4>
+
+            <div class="form-group">
+                <svg class="barcode"
+                 jsbarcode-textAlign="center"
+                 jsbarcode-width=3
+                 jsbarcode-fontSize=25
+                 jsbarcode-value=@item.SKUNumber
+                 jsbarcode-textmargin="0"
+                 jsbarcode-fontoptions="bold">
+                </svg>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        JsBarcode(".barcode").init();
+    </script>
+}

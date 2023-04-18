@@ -1,0 +1,48 @@
+﻿@model caa_mis.Models.TransactionType
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit Event Type</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Name<span style="color:red;">*</span></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InOut" class="control-label">In/Out<span style="color:red;">*</span></label>
+                <select asp-for="InOut" class="form-control form-select" asp-items="Html.GetEnumSelectList<InOut>()"></select>
+                <span asp-validation-for="InOut" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label">Status<span style="color:red;">*</span></label>
+                <select asp-for="Status" class="form-control form-select" asp-items="Html.GetEnumSelectList<Archived>()"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

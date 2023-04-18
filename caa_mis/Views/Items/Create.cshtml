@@ -1,0 +1,85 @@
+﻿@model caa_mis.Models.Item
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create New Product</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Name<span style="color:red;">*</span></label>
+                <input asp-for="Name" class="form-control" placeholder="e.g. Chair or Table" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoryID" class="control-label"></label>
+                <select asp-for="CategoryID" class="form-control form-select" asp-items="ViewBag.CategoryID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SKUNumber" class="control-label">SKU Number<span style="color:red;">*</span></label>
+                <div class="input-group">
+                    <input asp-for="SKUNumber" class="form-control" id="SKUNumber" />
+                    <button type="button" class="btn btn-secondary" onclick="generateSKU()">Generate SKU</button>
+                </div>
+                <span asp-validation-for="SKUNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label">Description<span style="color:red;">*</span></label>
+                <textarea asp-for="Description" class="form-control" placeholder="e.g. foldable chair or wooden chair..."></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Scale" class="control-label">Measurement</label>
+                <input asp-for="Scale" class="form-control" placeholder="e.g. meters, inches" />
+                <span asp-validation-for="Scale" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cost" class="control-label">Cost Per Item ($)<span style="color:red;">*</span></label>
+                <input asp-for="Cost" class="form-control" placeholder="e.g. 66.99" />
+                <span asp-validation-for="Cost" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MinLevel" class="control-label">Minimum Stock Level<span style="color:red;">*</span></label>
+                <input asp-for="MinLevel" class="form-control" value="5"/>
+                <span asp-validation-for="MinLevel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Manufacturer" class="control-label">Vendor</label>
+                <select asp-for="ManufacturerID" class="form-control form-select" asp-items="ViewBag.ManufacturerID">
+                    <option value="">-- Select --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ItemStatusID" class="control-label"></label>
+                <select asp-for="ItemStatusID" class="form-control form-select" asp-items="ViewBag.ItemStatusID"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label custom-file-label">Product Photo:</label>
+                <div class="input-group mb-3">
+                    <input type="file" class="form-control" name="thePicture" id="thePicture">
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a href='@ViewData["returnURL"]' class="btn btn-secondary">Back to Products List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/site.js"></script>
+
+    <script>
+        window.onload = function ()
+        {
+            generateSKU();
+        };
+    </script>
+}

@@ -1,0 +1,128 @@
+﻿@model caa_mis.Models.Item
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit @Model.Name</h1>
+<hr />
+
+    
+<div class="container">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ID" />
+        <div class="row">
+            <div class="col-md-4">
+                @{
+                    var hasPicture = (Model.ItemPhoto?.Content != null);
+                    if (hasPicture)
+                        {
+                            @:<div>
+                                string imageBase64 = Convert.ToBase64String(Model.ItemPhoto.Content);
+                                string imageSrc = string.Format("data:" + Model.ItemPhoto.MimeType + ";base64,{0}", imageBase64);
+                                <img src="@imageSrc" alt="Photo of @Model.Name" title="Photo of @Model.Name" class="img-fluid rounded"  style="max-height: 250px; max-width: 276px" />
+                            @:</div>
+                        }
+                    }
+                @{
+                    if (hasPicture)
+                    {
+                        <div class="row">
+                            <div class="form-check m-3">
+                                <input class="form-check-input" type="checkbox" id="chkRemoveImage" name="chkRemoveImage">
+                                <label class="form-check-label" for="chkRemoveImage">
+                                <strong>Check to remove Image</strong>
+                                </label>
+                            </div>
+                        </div>
+                    }
+                }
+                <div class="form-group">
+                    <label class="control-label custom-file-label">Picture File:</label>
+                    <div class="input-group mb-3">
+                        <input type="file" class="form-control" name="thePicture" id="thePicture">
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group">
+                    <svg id="barcode"
+                        jsbarcode-textAlign="center"
+                        jsbarcode-width=2
+                        jsbarcode-fontSize=25
+                        jsbarcode-value=@Model.SKUNumber
+                        jsbarcode-textmargin="0"
+                        jsbarcode-fontoptions="bold">
+                    </svg>
+                </div>
+            </div>
+        
+             <div class="col-md-8">
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label">Name<span style="color:red;">*</span></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            
+                <div class="form-group">
+                    <label asp-for="CategoryID" class="control-label"></label>
+                    <select asp-for="CategoryID" class="form-control form-select" asp-items="ViewBag.CategoryID"></select>
+                    <span asp-validation-for="CategoryID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SKUNumber" class="control-label">SKU Number<span style="color:red;">*</span></label>
+                    <div class="input-group">
+                        <input asp-for="SKUNumber" class="form-control" disabled/>
+                    </div>
+                    <span asp-validation-for="SKUNumber" class="text-danger"></span>
+                </div>
+            
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label">Description<span style="color:red;">*</span></label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Scale" class="control-label">Measurement</label>
+                    <input asp-for="Scale" class="form-control" />
+                    <span asp-validation-for="Scale" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Cost" class="control-label">Cost Per Item ($)<span style="color:red;">*</span></label>
+                    <input asp-for="Cost" class="form-control" />
+                    <span asp-validation-for="Cost" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MinLevel" class="control-label">Minimum Stock Level<span style="color:red;">*</span></label>
+                    <input asp-for="MinLevel" class="form-control" />
+                    <span asp-validation-for="MinLevel" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Manufacturer" class="control-label">Vendor</label>
+                    <select asp-for="ManufacturerID" class="form-control form-select" asp-items="ViewBag.ManufacturerID">
+                        <option value="">-- Select --</option>
+                    </select>
+                    <span asp-validation-for="ManufacturerID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ItemStatusID" class="control-label"></label>
+                    <select asp-for="ItemStatusID" class="form-control form-select" asp-items="ViewBag.ItemStatusID"></select>
+                    <span asp-validation-for="ItemStatusID" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </div>
+        </div>
+     </form>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        JsBarcode("#barcode").init();
+    </script>
+}

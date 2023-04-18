@@ -1,0 +1,313 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CAA Marketing Inventory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/caa_mis.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/table-styles.css" asp-append-version="true" />
+    <link rel="manifest" href="~/manifest.json" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="/images/logo.svg" alt="Home" width="150" /></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Inventory
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                @*<li><a class="dropdown-item" asp-area="" asp-controller="Transactions" asp-action="Incoming">Receive Transfers</a></li>*@
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Items" asp-action="Index">Products</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="StockIn" asp-action="Index">Add Stock Item</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Transactions" asp-action="Index">Transfers</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Events" asp-action="Index">Events</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Reports" asp-action="">Reports</a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Administration
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Branches" asp-action="Index">Branches</a></li>
+
+                                <!--<li><a class="dropdown-item" asp-area="" asp-controller="TransactionTypes" asp-action="Index">Event Types</a></li>-->
+                                <li><a class="dropdown-item" asp-area="" asp-controller="TransactionStatus" asp-action="Index">Inventory Status</a></li>
+                                <li><hr /></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Categories" asp-action="Index">Product Categories</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="ItemStatus" asp-action="Index">Product Status</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Manufacturers" asp-action="Index">Vendors</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Setting
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Bulks" asp-action="Index">Inventory Reset</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Employees" asp-action="Index">Manage Employees</a></li>
+                                <li><button id="installButton" class="dropdown-item">Install App</button></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" onclick="toggleSidebar()" href="#">Help</a>
+                        </li>
+
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">@TempData["SuccessMessage"]</div>
+    }
+    <div class="container">
+        <br />
+        <breadcrumb asp-homepage-title="Home"
+                    asp-homepage-url="@Url.Action("Index", "Home", values: new { area = "" })"
+                    asp-bootstrap-version="V4"
+                    asp-homepage-glyphicon="glyphicon glyphicon-home"></breadcrumb>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+
+        @*sidebar Content*@
+        <div class="sidebar" id="sidebar">
+            <div class="container-liner">
+                <a class="btn btn-secondary" onclick="toggleSidebar()" href="#">Close</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container text-center">
+            <p>&copy; 2023 - CAA Niagara Marketing Inventory System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
+        </div>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        })
+        .catch(error => {
+          console.log('ServiceWorker registration failed: ', error);
+        });
+    });
+  }
+</script>
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
+
+<script>
+    $(document).ready(function () {
+        $('#download-report-button').click(function () {
+            $('#report-loading-indicator').show();
+            setTimeout(function () {
+                $('#report-loading-indicator').hide();
+            }, 7000); // Change the timeout value to match your report download time
+        });
+    });
+</script>
+
+<script>
+    // Define a lookup object for the help text
+    var helpTextLookup = {};
+    var helpContent = `<p>This is the page where you can manage product information.</p>
+                        <ul>
+                            <li><b>NAME</b> Products or swag item names.</li>
+                            <li><b>CATEGORY</b> It shows categories of product. You can modify or see more details, visit menu Administration->Product Categories page.</li>
+                            <li><b>SKU</b> It is our stock keeping unit barcode. You want see barcode, click on Details link of product.</li>
+                            <li><b>COST</b> It shows current stock product cost.</li>
+                            <li><b>BRANCH</b> It shows product allocated location. You can modify or see more details, visit menu Administration->Branches page.</li>
+                            <li><b>QUANTITY</b> It shows each product count by each branch</li>
+                            <li><b>TOTAL QUANTITY</b> It shows each product count in all branches.</li>
+                        </ul>`;
+    helpTextLookup["/items"] = helpContent;
+
+    helpContent = `<p>This is the page where you can manage stock-in products.</p>
+                    <ul>
+                        <li><b>DESCRIPTION</b> Products short descriptions.</li>
+                        <li><b>ORIGIN</b> It shows product allocated location before stock-in. You want see barcode, click on Details link of product.</li>
+                        <li><b>DESTINATION</b> It shows product allocated location after stock-in.</li>
+                        <li><b>DATE</b> It shows transfer started date for each product.</li>
+                        <li><b>STATUS</b> Product stock-in status it shows current state of transaction for each product.</li>
+                    </ul>`;
+    helpTextLookup["/stockin"] = helpContent;
+
+    helpContent = `<p>This is the page where you can manage transfering group of products.</p>
+                    <ul>
+                        <li><b>DESCRIPTION</b> Products short descriptions.</li>
+                        <li><b>ORIGIN</b> It shows product allocated location before transfer. You want see barcode, click on Details link of product.</li>
+                        <li><b>DESTINATION</b> It shows product allocated location after transfer.</li>
+                        <li><b>DATE</b> It shows transfer started date for each product.</li>
+                        <li><b>STATUS</b> Product transfer status it shows current state of transaction for each product.RELEASED is product transaction is ongoing but released from origin branch, OPEN is ongoing but not released yet. RECEIVED is transfer process it finished.</li>
+                    </ul>`;
+    helpTextLookup["/transactions"] = helpContent;
+
+    helpContent = `<p>This is the page where you can create new events and see all events.</p>
+                    <ul>
+                        <li><b>NAME</b> Event name.</li>
+                        <li><b>BRANCH</b> It shows event allocated branch/location.</li>
+                        <li><b>DATE</b> It shows event started date.</li>
+                        <li><b>STATUS</b> Event status, it shows current state of transaction for each branch. RELEASED is product transaction is ongoing but released from origin branch, OPEN is ongoing but not released yet. RECEIVED is transfer process it finished</li>
+                    </ul>`;
+    helpTextLookup["/events"] = helpContent;
+
+    helpContent = `<p>This is the page where you can reports for inventory items, event items, and all transfered items.</p>
+                    <ul>
+                        <li><b>STOCK REPORT</b> It shows inventory products list.</li>
+                        <li><b>EVENTS REPORT</b> It shows event related transfering products list.</li>
+                        <li><b>TRANSFERRED PRODUCTS</b> It shows all transfering products except event products.</li>
+                        <li><b>GENERATE BARCODES</b> It shows barcodes for all products or you can filter it by some.</li>
+                   </ul>`;
+    helpTextLookup["/reports"] = helpContent;
+
+    helpContent = `<p>This is the page where you can create new branch and see all branches.</p>
+                    <ul>
+                        <li><b>NAME</b> Branch name.</li>
+                        <li><b>ADDRESS</b> Branch address.</li>
+                        <li><b>LOCATION</b> Branch City.</li>
+                        <li><b>PHONE NUMBER</b> Phone number.</li>
+                        <li><b>STATUS</b> If you want, you can disable or enable branches.</li>
+                    </ul>`;
+    helpTextLookup["/branches"] = helpContent;
+
+    helpContent = `<p>This is the page where you can create new transfer status and see all transfer status.</p>
+                    <ul>
+                        <li><b>NAME</b> Transaction status name.</li>
+                        <li><b>DESCRIPTION</b> Description about status.</li>
+                        <li><b>STATUS</b> Current state of transaction status - Enabled or Disabled.</li>
+                    </ul>`;
+    helpTextLookup["/transactionstatus"] = helpContent;
+
+    helpContent = `<p>This is the page where you can create new product category and see categories.</p>
+                    <ul>
+                        <li><b>NAME</b> Product category name.</li>
+                        <li><b>DESCRIPTION</b> Description about category.</li>
+                        <li><b>STATUS</b> Current state of product category - Enabled or Disabled.</li>
+                    </ul>`;
+    helpTextLookup["/categories"] = helpContent;
+
+    helpContent = `<p>This is the page where you can create new product status and see all product status.</p>
+                    <ul>
+                        <li><b>NAME</b> Product inventory status name.</li>
+                        <li><b>DESCRIPTION</b> Description about status.</li>
+                        <li><b>STATUS</b> Current state of product status - Enabled or Disabled.</li>
+                    </ul>`;
+    helpTextLookup["/itemstatus"] = helpContent;
+
+    helpContent = `<p>This is the page where you can create new vendor and see all vendors.</p>
+                    <ul>
+                        <li><b>NAME</b> Vendor name.</li>
+                        <li><b>ADDRESS</b> Vendor address.</li>
+                        <li><b>LOCATION</b> Vendor City.</li>
+                        <li><b>PHONE</b> Vendor Phone, Email number.</li>
+                        <li><b>STATUS</b> If you want, you can disable or enable branches.</li>
+                    </ul>`;
+    helpTextLookup["/manufacturers"] = helpContent;
+
+    helpContent = `<p>This is the page where you can bulk change on item list using import excel file.</p>
+                    <ul>
+                        <li><b>BRANCH</b> Which Branch affected in bulk change.</li>
+                        <li><b>DATE</b> When change is happened.</li>
+                        <li><b>STATUS</b> Change status.</li>
+                    </ul>`;
+    helpTextLookup["/bulks"] = helpContent;
+
+    helpContent = `<p>This is the page where you can create new employee and see all employees and archive existing employees.</p>
+                    <ul>
+                        <li><b>EMPLOYEE</b> Employee Name and Mail address.</li>
+                        <li><b>BRANCH</b> Allocated branch.</li>
+                        <li><b>ROLES</b> What type of permission employee have?</li>
+                        <li><b>ACTIVE</b> Employee account it active or not.</li>
+                    </ul>`;
+
+    helpTextLookup["/employees"] = helpContent;
+    // Listen for the Help button click event
+    $(".nav-link.text-dark[href='#']").on("click", function (event) {
+        event.preventDefault();
+
+        // Get the URL of the current page
+        var url = window.location.pathname.toLowerCase();
+
+        // Get the help text based on the URL
+        var helpText = helpTextLookup[url] || `
+                  <p>This is the <b>HOME Dashboard</b> where you can navigate by pointing and
+                        clicking your mouse or tabbing using your keyboard and enter key.</p>
+                  <ul>
+                    <li><b>INVENTORY</b> for creating new Products, Transfers, and Receiving of items.</li>
+                    <li><b>EVENT</b> for creating Events, EventItems and Assign to Other Branches.</li>
+                    <li><b>REPORTS</b> for viewing and generating of Products Transaction, Transferred Products, and Stock Summary reports.</li>
+                    <li><b>ADMINISTRATION</b> for creating Branches, Employees, Event Types, Inventory Statuses, Vendors, Product Categories, and Statuses.</li>
+                    <li><b>SETTING</b> for editing User Roles information and archiving of existing employees.</li>
+                    <li><b>LOGIN</b> for signing in of registered users, resetting of passwords, and resending of email confirmations.</li>
+                  </ul>
+                `;
+
+        // Get the title page name
+        var titlePageName = $("title").text().replace(/-.*/, "Page");
+
+        // Set the help text
+        $("#sidebar .container-liner").html("<br/><a class='btn btn-primary' onclick='toggleSidebar()' href='#'>Close</a><h4>" + titlePageName + "</h4><div>" + helpText + "</div>");
+
+    });
+
+    // sidebar Help
+    $(function () {
+        $("#sidebar-tab-text").width($("#sidebar").height());
+    });
+    $(window).resize(function () {
+        $("#sidebar-tab-text").width($("#sidebar").height());
+    });
+    /* End of unsure centering */
+
+    //The only necessary piece of code
+    function toggleSidebar() {
+        $("#sidebar").toggleClass("move-to-left");
+        $("#sidebar-tab").toggleClass("move-to-left");
+        $("main").toggleClass("move-to-left-partly");
+        $(".arrow").toggleClass("active");
+    }
+
+    //helpcenter
+    $(document).ready(function () {
+        $('.help-popover').popover({
+            placement: 'bottom',
+            title: "THE HOME PAGE",
+            html: true,
+            content: ""
+        });        
+    });
+</script>

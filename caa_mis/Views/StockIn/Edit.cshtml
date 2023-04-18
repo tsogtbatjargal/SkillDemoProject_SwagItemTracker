@@ -1,0 +1,78 @@
+﻿@model caa_mis.Models.Transaction
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+
+<h1>Edit  Stock Item</h1>
+<hr />
+
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="ID" />
+    <input type="hidden" name="TransactionStatusID" id="TransactionStatusID" value="1">
+    <input type="hidden" name="TransactionTypeID" id="TransactionTypeID" value="1">
+    <input type="hidden" name="OriginID" id="TransactionTypeID" value="1">
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="EmployeeID" class="control-label"></label>
+            <select asp-for="EmployeeID" class="form-control form-select" asp-items="ViewBag.EmployeeID"></select>
+
+        </div>
+        @*<div class="col-md-4 mb-3">
+            <label asp-for="TransactionTypeID" class="control-label">Type</label>
+            <select asp-for="TransactionTypeID" class="form-control form-select" asp-items="ViewBag.TransactionTypeID"></select>
+
+        </div>*@
+       
+        <div class="col-md-4 mb-3">
+            <label asp-for="TransactionDate" class="control-label">Date</label>
+            <input asp-for="TransactionDate" class="form-control" />
+            <span asp-validation-for="TransactionDate" class="text-danger"></span>
+        </div>
+        
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="form-group">
+                <label asp-for="DestinationID" class="control-label"></label>
+                <select asp-for="DestinationID" class="form-control form-select" asp-items="ViewBag.DestinationID"></select>
+                <span asp-validation-for="DestinationID" class="text-danger"></span>
+            </div>
+
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="form-group">
+                <label asp-for="Shipment" class="control-label"></label>
+                <input asp-for="Shipment" class="form-control" />
+                <span asp-validation-for="Shipment" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+       
+        <div class="col-md-4 mb-3">
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control">
+
+                </textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

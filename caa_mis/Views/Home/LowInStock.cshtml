@@ -1,0 +1,68 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    ViewBag.Title = "LowInStock";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>th { font-weight: normal; }</style>
+
+<h1>Low In Stock Items</h1>
+<br />
+<p>
+    @Html.ActionLink("Download Low In Stock Report", "DownloadLowInStock", new { branch = ViewBag.CurrentBranchID }, new { @class = "btn btn-info float-end" })
+</p>
+
+@using (Html.BeginForm())
+{
+    <p>
+        @Html.DropDownList("branch", ViewBag.Branches as List<SelectListItem>, new { onchange = "this.form.submit();", style = "width: 300px;" })
+    </p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+        <th><a href="#" class="sort" data-sort="branch">Location</a></th>
+        <th><a href="#" class="sort" data-sort="item">Item Name</a></th>
+        <th><a href="#" class="sort" data-sort="minlevel">Minimum Level</a></th>
+        <th><a href="#" class="sort" data-sort="totalstock">Total Stock</a></th>
+            @*<th>Percentage</th>*@
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.TableItem)
+        {
+            <tr>
+            <td class="branch">@item.BranchName</td>
+            <td class="item">@item.ItemName</td>
+            <td class="minlevel">@item.MinLevel</td>
+            <td class="totalstock">@item.TotalStock</td>
+                @*<td>@string.Format("{0:P2}", item.Percentage)</td>*@
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+    $(function () {
+        $('.sort').click(function () {
+            var column = $(this).data('sort');
+            var order = $(this).hasClass('asc') ? 'desc' : 'asc';
+            $('.sort').removeClass('asc').removeClass('desc');
+            $(this).addClass(order);
+            var rows = $('tbody > tr').get();
+            rows.sort(function (a, b) {
+                var keyA = $(a).children('td.' + column).text();
+                var keyB = $(b).children('td.' + column).text();
+                if (order == 'asc') {
+                    return (keyA > keyB) ? 1 : -1;
+                } else {
+                    return (keyA < keyB) ? 1 : -1;
+                }
+            });
+            $.each(rows, function (index, row) {
+                $('tbody').append(row);
+            });
+            return false;
+        });
+    });
+</script>

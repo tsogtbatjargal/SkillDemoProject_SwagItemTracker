@@ -1,0 +1,273 @@
+﻿@model IEnumerable<caa_mis.Models.Item>
+
+@{
+    ViewData["Title"] = "Products";
+
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p class="d-inline">
+    <a asp-action="Create" class="btn btn-primary float-left">Create New Product</a>
+    <p class="d-inline float-end">
+            <button class="btn btn-toolbar @(ViewData["Filtering"]) d-inline" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+                Filter/Search
+            </button>
+       
+        <a asp-action="DownloadItems" id="download-report-button" class="btn btn-info ml-1">Download Products</a>       
+        <div id="report-loading-indicator" class="progress" style="display:none;">
+            <div class="progress-label">Downloading report...</div>
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 70%"></div>
+        </div>       
+        
+    </p>
+</p>
+
+<form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <div class="form-horizontal">
+        
+        <div class="collapse" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+                    <div class="d-block d-lg-none">
+                        <div class="form-group">
+                            <label class="control-label">Sort By:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" class="" value="desc"
+                                               @((ViewData["sortDirection"].ToString() != "asc" ? "checked=\"checked\"" : ""))
+                                               name="sortDirectionCheck" />&nbsp;&nbsp;Descending
+                                    </div>
+                                </div>
+                                <select name="sortFieldID" class="form-control" asp-items="ViewBag.sortFieldID"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Select by Category:</label>
+                        @Html.DropDownList("CategoryID", null, "All Categories", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Filter by Status:</label>
+                        @Html.DropDownList("ItemStatusID", null, "All Statuses", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="control-label">Search SKU:</label>
+                        @Html.TextBox("SearchSKU", null, new { @class = "form-control p-2" })
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Search Product Name:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control p-2" })
+                    </div>
+                    <div class="form-group col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary" />
+                        <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="container-fluid d-block d-lg-none">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="card mb-sm-3" style="min-width: 18rem;">
+                    <h5 class="card-header"><strong>@Html.DisplayFor(modelItem => item.Name)</strong></h5>
+                    <div class="card-body">
+                        <figure class="row">
+                            <p class="col-auto">
+                                @{
+                                    if (item.ItemThumbnail?.Content != null)
+                                    {
+                                        string imageBase64 = Convert.ToBase64String(item.ItemThumbnail.Content);
+                                        string imageSrc = string.Format("data:" + item.ItemThumbnail.MimeType + ";base64,{0}", imageBase64);
+                                        <img src="@imageSrc" alt="Photo of @item.Name" title="Photo of @item.Name" style="max-height: 80px; max-width: 96px" class="img-fluid rounded" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/blankProfile.jpg" style="max-height: 80px; max-width: 96px" class="img-fluid rounded" />
+                                    }
+                                }
+                            </p>
+                            <figcaption class="col">
+                                <p class="card-text">
+                                    @*Card Text goes Here*@
+                                    <dl class="row lh-1">
+                                        <dt class="col-3 text-truncate">
+                                            @Html.DisplayNameFor(model => model.Category)
+                                        </dt>
+                                        <dd class="col-9">
+                                            @Html.DisplayFor(modelItem => item.Category.Name)
+                                        </dd>
+                                        <dt class="col-3 text-truncate">
+                                            @Html.DisplayNameFor(model => model.SKUNumber)
+                                        </dt>
+                                        <dd class="col-9">
+                                            @Html.DisplayFor(modelItem => item.SKUNumber)
+                                        </dd>
+                                        <dt class="col-3 text-truncate">
+                                            @Html.DisplayNameFor(model => model.Cost)
+                                        </dt>
+                                        <dd class="col-9">
+                                            @String.Format("{0:C}", item.Cost)
+                                        </dd>
+                                    </dl>
+                                </p>
+                            </figcaption>
+                        </figure>
+                        <div class="card-footer">
+                            <a asp-action="Edit" asp-route-id="@item.ID">[ Edit ]</a> 
+                            <a asp-action="Details" asp-route-id="@item.ID">[ Details ]</a> 
+                            @if (item.ItemStatusID == 1)
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.ID">[ Discontinue ]</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="d-none d-lg-block">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>
+                            <input type="submit" name="actionButton" value="Name" class="btn btn-link btn-1" />
+                        </th>
+                        <th>
+                            <input type="submit" name="actionButton" value="Category" class="btn btn-link btn-1" />
+                        </th>
+                        <th>
+                            <input type="submit" disabled="disabled" value="SKU" class="btn btn-link btn-1" style="color: blue;" />
+                        </th>
+                        <th>
+                            <input type="submit" disabled="disabled" value="Cost" class="btn btn-link btn-1" style="color: blue;" />
+                        </th>
+                        <th>
+                            <input type="submit" disabled="disabled" value="Branch" class="btn btn-link btn-1" style="color: blue;" />
+                        </th>
+                        <th>
+                            <input type="submit" disabled="disabled" value="Quantity" class="btn btn-link btn-1" style="color: blue;" />
+                        </th>
+                        <th>
+                            <input type="submit" name="actionButton" value="Total Quantity" class="btn btn-link btn-1" />
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @{
+                                    if (item.ItemThumbnail?.Content != null)
+                                    {
+                                        string imageBase64 = Convert.ToBase64String(item.ItemThumbnail.Content);
+                                        string imageSrc = string.Format("data:" + item.ItemThumbnail.MimeType + ";base64,{0}", imageBase64);
+                                        <img src="@imageSrc" alt="Photo of @item.Name" title="Photo of @item.Name" class="img-fluid rounded" />
+                                    }
+                                }
+                            </td>
+                            <td style="vertical-align: middle;" class="text-left">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td style="vertical-align: middle;" class="text-left">
+                                @Html.DisplayFor(modelItem => item.Category.Name)
+                            </td>
+                            <td style="vertical-align: middle;" class="text-left">
+                                @Html.DisplayFor(modelItem => item.SKUNumber)
+                            </td>
+                            <td style="vertical-align: middle;" class="text-left">
+                                @String.Format("{0:C}", item.Cost)
+                            </td>
+                            <td style="vertical-align: middle;" class="text-left">
+                                @{                                  
+                                    int condCount = item.Stocks.Count();
+                                    if (condCount > 0)
+                                    {
+                                        string firstCond = item.Stocks.FirstOrDefault().Branch.Name;
+                                        if (condCount > 1)
+                                        {
+                                            string condList = "";
+                                            var c = item.Stocks.ToList();
+                                            for (int i = 1; i < condCount; i++)//Skip the first because we have it already
+                                            {
+                                                condList += c[i].Branch.Name + " <br />";
+                                            }
+                                            <div>
+                                                @firstCond
+                                                <br />
+                                                @Html.Raw(condList)
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            @firstCond
+                                        }
+                                    }
+                                }
+                            </td>
+                            <td>
+								@{  // Codes to Retrieve Quantity of Items //
+									int qCount = item.Stocks.Count();
+                                    if (qCount > 0)
+									{
+										int firstCond = item.Stocks.FirstOrDefault().Quantity;
+                                        if (qCount > 1)
+										{
+											string qList = "";
+											var c = item.Stocks.ToList();
+                                            for (int i = 1; i < qCount; i++)
+											{
+                                                qList += c[i].Quantity + " <br />";
+											}
+											<div>
+                                                @firstCond
+                                                <br />
+                                                @Html.Raw(qList)
+											</div>
+										}
+										else
+										{
+											@firstCond
+										}
+									}
+                                    else
+                                    {
+										<div>
+											0
+										</div>
+									}
+								}
+                            </td>
+                            <td style="vertical-align: middle;" class="text-left">
+                                @{  // Code to Retrieve Total Quantities of Items //
+                                    @item.Stocks.Sum(s => s.Quantity)
+                                }
+                            </td>
+                            <td style="vertical-align: middle;" class="text-left">
+                                <a asp-action="Edit" asp-route-id="@item.ID">[ Edit ]</a> 
+                                <a asp-action="Details" asp-route-id="@item.ID">[ Details ]</a>
+                                @if (item.ItemStatusID == 1)
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item.ID">[ Discontinue ]</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <partial name="_PagingNavBar" />
+</form>

@@ -1,0 +1,30 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="form-group">
+    <h4>@ViewData["name"]</h4>
+    <svg id="barcode"
+         jsbarcode-textAlign="center"
+         jsbarcode-width=3
+         jsbarcode-fontSize=25
+         jsbarcode-value=@ViewData["sku"]
+         jsbarcode-textmargin="0"
+         jsbarcode-fontoptions="bold">
+    </svg>
+</div>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<button onclick="window.print()" class="btn btn-primary">Print</button>
+<a asp-action="Details" asp-route-id="@ViewData["id"]" class="btn btn-secondary">Back to Product Details</a>
+@section Scripts {
+
+    <script type="text/javascript">
+        JsBarcode("#barcode").init();
+    </script>
+}

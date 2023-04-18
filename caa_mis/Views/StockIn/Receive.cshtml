@@ -1,0 +1,123 @@
+﻿@model caa_mis.Models.Transaction
+
+@{
+    ViewData["Title"] = "Receive";
+    IEnumerable<caa_mis.Models.TransactionItem> Items = (IEnumerable<caa_mis.Models.TransactionItem>)ViewBag.Items;//(caa_mis.Models.TransactionItem)ViewBag.Items;
+}
+
+<h1>Receive</h1>
+
+<h3>Are you sure you want to Receive the following items?</h3>
+<p>Receiving this record will add items to you inventory</p>
+<form asp-action="Receive">
+    <input type="hidden" asp-for="@Model.ID" />
+    <input type="submit" value="Receive" class="btn btn-primary" />
+    <a asp-action="Incoming" asp-controller="TransactionItems" asp-route-TransactionID="@Model.ID" class="btn btn-danger">Back to Details Page</a>
+</form>
+<hr />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6">
+            <dl class="row">
+                <dt class="col-md-4">
+                    Transaction Type
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.TransactionType.Name)
+                </dd>
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Employee)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Employee.FirstName)
+                </dd>
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Origin)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Origin.Name)
+                </dd>
+
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.ReceivedDate)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.ReceivedDate)
+                </dd>
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Description)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Description)
+                </dd>
+
+            </dl>
+        </div>
+        <div class="col-6">
+            <dl class="row">
+                <dt class="col-md-4">
+                    Date
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.TransactionDate)
+                </dd>
+
+                <dt class="col-md-4">
+                    Status
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.TransactionStatus.Name)
+                </dd>
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Destination)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Destination.Name)
+                </dd>
+
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Shipment)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Shipment)
+                </dd>
+
+            </dl>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+            <label class="col-form-label">SKU</label>
+        </div>
+        <div class="col-sm">
+            <label class="col-form-label">Product Name</label>
+        </div>
+        <div class="col-sm">
+            <label class="col-form-label">Quantity</label>
+        </div>
+        <div class="col-sm">
+            <label class="col-form-label">Quantity Received</label>
+        </div>
+    </div>
+
+    @foreach (var item in Items)
+    {
+        <div class="row">
+            <div class="col-sm">
+                <label class="col-form-label-sm">@Html.DisplayFor(modelItem => item.Item.SKUNumber)</label>
+            </div>
+            <div class="col-sm">
+                <label class="col-form-label-sm"> @Html.DisplayFor(modelItem => item.Item.Name)</label>
+            </div>
+            <div class="col-sm">
+                <label class="col-form-label-sm">@Html.DisplayFor(modelItem => item.Quantity)</label>
+            </div>
+            <div class="col-sm">
+                <label class="col-form-label-sm">@Html.DisplayFor(modelItem => item.ReceivedQuantity)</label>
+            </div>
+        </div>
+    }
+
+</div>

@@ -1,0 +1,157 @@
+﻿@model IEnumerable<caa_mis.ViewModels.StockSummaryByBranchVM>
+
+@{
+    ViewData["Title"] = "Stock Summary by Branch";
+}
+
+<h1>Stock Summary By Branch</h1>
+<p>
+    <a asp-action="DownloadStockItems" id="download-report-button" class="btn btn-info float-end">Download Stock Report</a>
+</p>
+<div id="report-loading-indicator" class="progress float-end" style="display:none;">
+    <div class="progress-label">Downloading report...</div>
+    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 70%"></div>
+</div>
+
+
+<form asp-controller="Reports" asp-action="StockSummaryByBranch" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <div class="form-horizontal">
+        <button class="btn @(ViewData["Filtering"]) btn-toolbar float-left" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            Filter/Search
+        </button>
+        @if (!Model.Any())
+        {
+            <p><b>No records found</b></p>
+        }
+        <div class="collapse" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Filter by Branches: (Ctrl + click to multiselect)</label>
+                        @Html.ListBox("BranchID", null, htmlAttributes: new { @class = "form-select p-0", size = "5"})  @*<=Branch Listbox Item Size *@
+
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Search Product:</label>
+                        @Html.TextBox("Products", null, new { @name="Products", @id="Products", @class = "form-control p-2" })
+                        <input type="hidden" name="ProductIDs" id="ProductIDs" />
+
+                    </div>
+                    <div class="form-group col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary" />
+                        <a asp-action="StockSummaryByBranch" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table text-left">
+        <thead>
+            <tr>
+                <th class="text-start">
+                    <input type="submit" name="actionButton" value="Branch" class="btn btn-link btn-1" />
+                </th>
+                <th>
+                    <input type="submit" name="actionButton" value="Product" class="btn btn-link btn-1" />
+                </th>
+                <th>
+                    <input type="submit" name="actionButton" value="Cost" class="btn btn-link btn-1" />
+                </th>
+                <th>
+                    <input type="submit" name="actionButton" value="Quantity" class="btn btn-link btn-1" />
+                </th>
+                <th>
+                    <input type="submit" name="actionButton" value="Min Level" class="btn btn-link btn-1" />
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-start">
+                        @Html.DisplayFor(modelItem => item.BranchName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ItemName)
+                    </td>
+                    <td>
+                        @String.Format("{0:C}", item.ItemCost)                       
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td >
+                        @Html.DisplayFor(modelItem => item.MinLevel)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
+@section Scripts {
+    <script type="text/javascript">
+        function split(val) {
+            return val.split(/,\s*/);
+        }
+        function extractLast(term) {
+            return split(term).pop();
+        }
+        jQuery("#clr").click(function () {
+            $("#Products").val("");
+        });
+        $('#Products')
+            .on("keydown", function (event) {
+                if (event.keyCode === $.ui.keyCode.TAB &&
+                    $(this).autocomplete("instance").menu.active) {
+                    event.preventDefault();
+                }
+            })
+            .autocomplete({
+                source: function (request, response) {
+
+                    $.ajax({
+                        url: '/TransactionItems/SearchProduct/',
+                        dataType: 'json',
+                        data: { BranchID: 1, term: extractLast(request.term) },
+                        success: function (data) {
+                            var result = $.map(data, function (item) {
+                                return {
+                                    label: item.name,
+                                    value: item.id
+                                };
+                            });
+                            return response(result);
+                        }
+                    });
+                },
+                focus: function () {
+                    // prevent value inserted on focus
+                    return false;
+                },
+                select: function (event, ui) {
+
+                    var terms = split(this.value);
+                    // remove the current input
+                    terms.pop();
+
+                    // add the selected item
+                    terms.push(ui.item.label);
+                    // add placeholder to get the comma-and-space at the end
+                    terms.push("");
+                    this.value = terms.join(", ");
+                    return false;
+
+                },
+                minLength: 0,
+            }).focus(function () {
+                // trigger the search when the input field receives focus
+                $(this).autocomplete("search", "");
+            });
+
+    </script>
+}

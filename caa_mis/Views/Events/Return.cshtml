@@ -1,0 +1,93 @@
+﻿@model caa_mis.Models.Event
+
+@{
+    ViewData["Title"] = "Return";
+    IEnumerable<caa_mis.Models.EventItem> Items = (IEnumerable<caa_mis.Models.EventItem>)ViewBag.Items;//(caa_mis.Models.TransactionItem)ViewBag.Items;
+}
+
+<h4>Return Items</h4>
+
+<h3>Are you sure you want to return this Event Items @Model.Branch.Name?</h3>
+<p>Releasing this willreturn inventory items to the selected branch.'</p>
+<form asp-action="Return">
+    <input type="hidden" asp-for="@Model.ID" />
+    <input type="submit" value="Return Items" class="btn btn-primary" />
+    <a asp-action="Return" asp-controller="EventItems" asp-route-EventID="@Model.ID" class="btn btn-danger">Back to Details Page</a>
+</form>
+<hr />
+@if (TempData.ContainsKey("ErrorMessage"))
+{
+    <span class="text-danger">@TempData["ErrorMessage"]</span>
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6">
+            <dl class="row">
+                <dt class="col-md-4">
+                    Name
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+                <dt class="col-md-4">
+                    Origin Branch
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Branch.Name)
+                </dd>
+                <dt class="col-md-4">
+                    Status
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.TransactionStatus.Name)
+                </dd>
+            </dl>
+        </div>
+        <div class="col-6">
+            <dl class="row">
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Date)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Date)
+                </dd>
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Employee.FullName)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Employee.FullName)
+                </dd>
+
+            </dl>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+            <label class="col-form-label">SKU</label>
+        </div>
+        <div class="col-sm">
+            <label class="col-form-label">Product Name</label>
+        </div>
+        <div class="col-sm">
+            <label class="col-form-label">Quantity Returned</label>
+        </div>
+    </div>
+
+    @foreach (var item in Items)
+    {
+        <div class="row">
+            <div class="col-sm">
+                <label class="col-form-label-sm">@Html.DisplayFor(modelItem => item.Item.SKUNumber)</label>
+            </div>
+            <div class="col-sm">
+                <label class="col-form-label-sm"> @Html.DisplayFor(modelItem => item.Item.Name)</label>
+            </div>
+            <div class="col-sm">
+                <label class="col-form-label-sm">@Html.DisplayFor(modelItem => item.ReturnedQuantity)</label>
+            </div>
+        </div>
+    }
+
+</div>

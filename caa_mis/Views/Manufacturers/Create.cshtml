@@ -1,0 +1,67 @@
+﻿@model caa_mis.Models.Manufacturer
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create New Vendor</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Name<span style="color:red;">*</span></label>
+                <input asp-for="Name" class="form-control" placeholder="e.g. Niagara College" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address1" class="control-label">Address 1<span style="color:red;">*</span></label>
+                <input asp-for="Address1" class="form-control" placeholder="e.g. 100 Niagara College" />
+                <span asp-validation-for="Address1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address2" class="control-label">Address 2</label>
+                <input asp-for="Address2" class="form-control" placeholder="e.g. Boulevard" />
+                <span asp-validation-for="Address2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label">City<span style="color:red;">*</span></label>
+                <input asp-for="City" class="form-control" placeholder="e.g. Welland" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Province" class="control-label">Province<span style="color:red;">*</span></label>
+                <input asp-for="Province" class="form-control" placeholder="e.g. Ontario" />
+                <span asp-validation-for="Province" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PostalCode" class="control-label">Postal Code<span style="color:red;">*</span></label>
+                <input asp-for="PostalCode" class="form-control" placeholder="e.g. L0S 1J0" />
+                <span asp-validation-for="PostalCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label">Phone<span style="color:red;">*</span></label>
+                <input asp-for="Phone" class="form-control" placeholder="e.g. 905-735-2211" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">Email<span style="color:red;">*</span></label>
+                <input asp-for="Email" class="form-control" placeholder="e.g. international@niagaracollege.ca" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,127 @@
+﻿@page
+@model LoginModel
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Log in";
+}
+
+
+<div class="container">
+
+    <div class="row  align-items-center">
+        <div class="col-xl-6  col-l-6 col-sm-12">
+            <div>
+                <img src="/images/CAAlogin.svg" alt="Background"  />
+            </div>
+        </div>
+        <div class="col-xl-6  col-l-6 col-sm-12">
+            <div >
+                <div class="login-form mt-6 text-center">
+                    <h1 class="text-center text-3xl">@ViewData["Title"]</h1>
+                    <form id="account" method="post" class="mt-8 space-y-6">
+                        <input type="hidden" name="remember" value="true">
+                        <div class="rounded-md shadow-sm -space-y-px">
+                            <div>
+                                <label for="email-address" class="sr-only">Email address</label>
+                                <input asp-for="Input.Email" id="email-address" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Email address">
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+                            <div>
+                                <label for="password" class="sr-only">Password</label>
+                                <input asp-for="Input.Password" id="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password">
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input asp-for="Input.RememberMe" id="remember_me" name="remember_me" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                <label asp-for="Input.RememberMe" class="ml-2 block text-sm text-gray-900">
+                                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <button id="login-submit" type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Log in
+                            </button>
+                        </div>
+                        <div class="text-sm">
+                            <a id="forgot-password" asp-page="./ForgotPassword" class="font-medium text-indigo-600 hover:text-indigo-500">
+                                Forgot your password?
+                            </a>
+                        </div>
+                    </form>
+                </div>
+        </div>
+    </div>
+    
+    
+    </div>
+</div>
+@section Styles {
+    <style>
+        .container {
+            padding-top: 5%;
+        }
+        .background-container {
+            position: fixed;
+            top: 200px;
+            left: 75px;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .background-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            max-width: 1000px; /* set the maximum width of the image */
+            max-height: 526px; /* set the maximum height of the image */
+        }
+
+        .main-container {
+            position: absolute;
+            right: 75px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 50%; /* Adjust this value as needed */
+        }
+
+        .login-form {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px; /* Set a max-width to avoid it from expanding too much on larger screens */
+            margin: auto;
+        }
+
+            .login-form h2 {
+                text-align: center;
+                margin-bottom: 1rem;
+                font-weight: bold;
+            }
+
+        .form-group.row {
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .text-danger {
+            color: red;
+        }
+
+
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

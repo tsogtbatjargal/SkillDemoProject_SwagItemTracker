@@ -1,0 +1,254 @@
+﻿@model IEnumerable<caa_mis.Models.BulkItem>
+
+@{
+    ViewData["Title"] = "Initial Inventory Items";
+    caa_mis.Models.Bulk transaction = (caa_mis.Models.Bulk)ViewBag.Transactions;
+}
+
+<h1>Inventory Items</h1>
+<hr />
+<div class="row">
+    <div class="col-6">
+        <dl class="row">
+            <dt class="col-md-4">
+                Branch
+            </dt>
+            <dd class="col-md-8">
+                @Html.DisplayFor(model => transaction.Branch.Name)
+            </dd>
+            <dt class="col-md-4">
+                Status
+            </dt>
+            <dd class="col-md-8">
+                @Html.DisplayFor(model => transaction.TransactionStatus.Name)
+            </dd>
+            
+
+        </dl>
+    </div>
+<div class="col-6">
+        <dl class="row">
+            <dt class="col-md-4">
+                @Html.DisplayNameFor(model => transaction.Date)
+            </dt>
+            <dd class="col-md-8">
+                @Html.DisplayFor(model => transaction.Date)
+            </dd>
+            <dt class="col-md-4">
+                @Html.DisplayNameFor(model => transaction.Employee.FullName)
+            </dt>
+            <dd class="col-md-8">
+                @Html.DisplayFor(model => transaction.Employee.FullName)
+            </dd>
+        </dl>
+    </div>
+</div>
+<form asp-action="Index" method="get">
+    <div class="form-horizontal">
+        <input type="hidden" name="TransactionID" value="@transaction.ID" />
+        <button class="btn btn-toolbar @(ViewData["Filtering"])" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+                Filter/Search
+            </button>
+        <div class="collapse" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+                    <div class="d-block d-lg-none">
+                        <div class="form-group">
+                            <label class="control-label">Sort By:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" class="" value="desc"
+                                               @((ViewData["sortDirection"].ToString() != "asc" ? "checked=\"checked\"" : ""))
+                                               name="sortDirectionCheck" />&nbsp;&nbsp;Descending
+                                    </div>
+                                </div>
+                                <select name="sortFieldID" class="form-control" asp-items="ViewBag.sortFieldID"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Select Product:</label>
+                        @Html.DropDownList("ItemID", null, "All Products", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary" />
+                        <a asp-action="Index" asp-route-BulkID="@transaction.ID" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+    <br />
+    <hr />
+    @if (transaction.TransactionStatus.Name == "Open")
+    {
+        <div id="productDetails">
+            <h5>Add Product</h5>
+            <form asp-action="Create">
+            @if (TempData.ContainsKey("ErrorMessage"))
+            {
+                <span class="text-danger">@TempData["ErrorMessage"]</span>
+            }
+                <div class="row alert alert-light">
+                    <div class="col-sm">
+                        <div class="form-group col-sm col-lg">
+                            <label for="ProductName" clas="bold">Product</label>
+                            <input type="text" class="form-control" id="ProductName" name="ProductName" placeholder="Start typing a product..." required>
+                            <input type="hidden" name="ProductID" id="ProductID" />
+                        <input type="hidden" name="TransactionID" id="TransactionID" value="@transaction.ID" />
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-group col-sm col-lg">
+                            <label for="Quantity">Quantity</label>
+                       
+                            <input type="number" class="form-control" id="Quantity" name="Quantity" placeholder="1" value="1" required>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-group col-sm col-lg">
+                        <br />
+                            <input type="submit" value="Add Product" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        }
+<form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <input type="hidden" name="TransactionID" value="@transaction.ID" />
+    <div class="container-fluid d-block d-lg-none">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="card mb-sm-3" style="min-width: 18rem;">
+                    <h5 class="card-header"><strong>@Html.DisplayFor(modelItem => item.Item)</strong></h5>
+                    <div class="card-body">
+                        <figure class="row">
+                            <figcaption class="col">
+                                <p class="card-text">
+                                    @*Card Text goes Here*@
+                                    <dl class="row lh-1">
+                                        <dt class="col-3 text-truncate">
+                                            @Html.DisplayNameFor(model => model.Quantity)
+                                        </dt>
+                                    </dl>
+                                </p>
+                            </figcaption>
+                        </figure>
+                        <div class="card-footer">
+                            @if (transaction.TransactionStatus.Name == "Open")
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> 
+                                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="d-none d-lg-block">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="submit" name="actionButton" value="SKU" class="btn btn-link btn-1" />
+                        </th>
+                        <th>
+                            <input type="submit" name="actionButton" value="Product Name" class="btn btn-link btn-1" />
+                        </th>
+                        <th>
+                            <input type="submit" name="actionButton" value="Quantity" class="btn btn-link btn-1" />
+                        </th>
+                        @if (transaction.TransactionStatus.Name == "Open")
+                        {
+                            <th>
+                                Action
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Item.SKUNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Quantity)
+                            </td>
+                            @if (transaction.TransactionStatus.Name == "Open")
+                            {
+                            <td>
+                                
+                                    <a asp-controller="BulkItems" asp-action="Edit" asp-route-id="@item.ID">
+                                        <span class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Edit Item">&#x270D;</span>
+                                    </a>
+                                    <a asp-controller="BulkItems" asp-action="Delete" asp-route-id="@item.ID">
+                                        <span class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete Item">&#x274C;</span>
+                                    </a>
+
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <partial name="_PagingNavBar" />
+</form>
+<div>
+    <p>
+    @if (transaction.TransactionStatus.Name == "Open")
+    {
+            <a asp-action="Edit" asp-controller="Bulks" asp-route-id="@transaction.ID" class="btn btn-primary">Edit</a>
+            <a asp-action="Release" asp-controller="Bulks" asp-route-id="@transaction.ID" class="btn btn-info">Release</a>
+    }
+
+    <a asp-action="Index" asp-controller="Bulks" class="btn btn-secondary">Back to Transaction List</a>
+    </p>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $('#ProductName').autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '/TransactionItems/SearchAllProduct/',
+                    dataType: 'json',
+                    data: {  term: $('#ProductName').val() },
+                    success: function (data) {
+                        var result = $.map(data, function (item) {
+                            console.log(item);
+                            return {
+                                label: item.name,
+                                value: item.id
+                            };
+                        });
+                        return response(result);
+                    }
+                });
+            },
+            select: function (event, ui) {
+                event.preventDefault();
+                $('#ProductName').val(ui.item.label);
+                $('#ProductID').val(ui.item.value);
+            },
+            minLength: 0,
+        }).focus(function () {
+            // trigger the search when the input field receives focus
+            $(this).autocomplete("search", "");
+        });
+
+    </script>
+}

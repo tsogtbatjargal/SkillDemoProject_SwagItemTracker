@@ -1,0 +1,96 @@
+﻿@model IEnumerable<caa_mis.Models.Item>
+
+@{
+    ViewData["Title"] = "Generate Barcode Filters";
+
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="PrintBarcode" method="post">
+    <div class="form-horizontal">
+        
+            <div class="card card-body bg-light">
+           
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label class="control-label">Scan or Type SKU/Product:</label>
+                        <input type="text" name="Products" id="Products" class="col-10" />
+                        <input type="hidden" name="ProductIDs" id="ProductIDs" />
+                    </div>
+                </div>
+                <div class="row">
+                    
+                    <div class="form-group col-md-12 align-self-end">
+                        <input type="submit" name="actionButton" value="Generate Filtered" class="btn btn-outline-primary" />
+                        <input type="submit" name="actionButton" value="Generate All Products" class="btn btn-outline-primary" />
+                        <a id="clr" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        
+    </div>
+</form>
+
+@section Scripts {
+    <script type="text/javascript">
+        function split(val) {
+            return val.split(/,\s*/);
+        }
+        function extractLast(term) {
+            return split(term).pop();
+        }
+        jQuery("#clr").click(function () {
+            $("#Products").val("");
+        });
+        $('#Products')
+            .on("keydown", function (event) {
+                if (event.keyCode === $.ui.keyCode.TAB &&
+                    $(this).autocomplete("instance").menu.active) {
+                    event.preventDefault();
+                }
+            })
+        .autocomplete({
+            source: function (request, response) {
+                
+                $.ajax({
+                    url: '/TransactionItems/SearchProduct/',
+                    dataType: 'json',
+                    data: { BranchID:1, term: extractLast(request.term) },
+                    success: function (data) {
+                        var result = $.map(data, function (item) {
+                            return {
+                                label: item.skuNumber,
+                                value: item.id
+                            };
+                        });
+                        return response(result);
+                    }
+                });
+            },
+            focus: function () {
+                // prevent value inserted on focus
+                return false;
+            },
+            select: function (event, ui) {
+               
+                var terms = split(this.value);
+                // remove the current input
+                terms.pop();
+                
+                // add the selected item
+                terms.push(ui.item.label);
+                // add placeholder to get the comma-and-space at the end
+                terms.push("");
+                this.value = terms.join(", ");
+                return false;
+
+            },
+            minLength: 0,
+        }).focus(function () {
+            // trigger the search when the input field receives focus
+            $(this).autocomplete("search", "");
+        });
+
+    </script>
+}

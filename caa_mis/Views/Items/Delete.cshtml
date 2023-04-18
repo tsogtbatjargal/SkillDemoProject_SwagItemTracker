@@ -1,0 +1,73 @@
+﻿@model caa_mis.Models.Item
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Disable Product</h1>
+
+<h3>Are you sure you want to disable @Model.Name?</h3>
+<div>
+    <hr />
+    @if (TempData.ContainsKey("ErrorMessage"))
+    {
+        <span class="text-danger">@TempData["ErrorMessage"]</span>
+    }
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Category.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SKUNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SKUNumber)
+        </dd>
+        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            Measurement
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Scale)
+        </dd>
+        <dt class = "col-sm-2">
+            Cost Per Item
+        </dt>
+        <dd class = "col-sm-10">
+            $@Html.DisplayFor(model => model.Cost)
+        </dd>
+        <dt class = "col-sm-2">
+            Vendor
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Manufacturer.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ItemStatus)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ItemStatus.Name)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Disable" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

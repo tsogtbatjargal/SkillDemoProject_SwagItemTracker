@@ -1,0 +1,8 @@
+﻿Add-Migration -Context ApplicationDbContext -OutputDir Data\Migrations Initial
+Update-Database -Context ApplicationDbContext
+
+Add-Migration -Context InventoryContext -o Data\CAAMigrations Initial
+Update-Database -Context InventoryContext
+
+Add to Migration for Triggers
+ExtraMigration.Steps(migrationBuilder);

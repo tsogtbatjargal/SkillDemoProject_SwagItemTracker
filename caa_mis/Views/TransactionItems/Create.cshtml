@@ -1,0 +1,39 @@
+﻿@model caa_mis.Models.TransactionItem
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Add Items for Transaction: @ViewData["TransactionName"]</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <input type="hidden" name="TransactionID" value="@Model.TransactionID" />
+            <input type="hidden" name="TransactionName" value="@ViewData["TransactionName"]" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ItemID" class="control-label"></label>
+                <select asp-for="ItemID" class ="form-control" asp-items="ViewBag.ItemID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div>
+    <a href='@ViewData["returnURL"]'>Back to Transaction</a>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,166 @@
+﻿@model IEnumerable<caa_mis.Models.Transaction>
+
+@{
+    ViewData["Title"] = "Incoming Transfer";
+}
+
+<h1>Incoming Transfer</h1>
+
+<p>
+    <button class="btn @(ViewData["Filtering"]) btn-toolbar float-end" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+        Filter/Search
+    </button>
+</p>
+<form asp-action="Incoming" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <div class="form-horizontal">
+
+        <div class="collapse" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+                    <div class="d-block d-lg-none">
+                        <div class="form-group">
+                            <label class="control-label">Sort By:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" class="" value="desc"
+                                               @((ViewData["sortDirection"].ToString() != "asc" ? "checked=\"checked\"" : ""))
+                                               name="sortDirectionCheck" />&nbsp;&nbsp;Descending
+                                    </div>
+                                </div>
+                                <select name="sortFieldID" class="form-control" asp-items="ViewBag.sortFieldID"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Select by Type:</label>
+                        @Html.DropDownList("TransactionTypeID", null, "All Transactions", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Filter by Status:</label>
+                        @Html.DropDownList("TransactionStatusID", null, "All Statuses", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Filter by Destination:</label>
+                        @Html.DropDownList("DestinationID", null, "All Destination", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Search Description:</label>
+                        @Html.TextBox("SearchString", null, htmlAttributes: new { @class = "form-control p-2" })
+                    </div>
+                    <div class="form-group col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary" />
+                        <a asp-action="Incoming" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="container-fluid d-block d-lg-none">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="card mb-sm-3" style="min-width: 18rem;">
+                    <h5 class="card-header"><strong>@Html.DisplayFor(modelItem => item.TransactionType.Name)</strong></h5>
+                    <div class="card-body">
+                        <figure class="row">
+                            <figcaption class="col">
+                                <p class="card-text">
+                                    @*Card Text goes Here*@
+                                    <dl class="row lh-1">
+                                        <dt class="col-3 text-truncate">
+                                            @Html.DisplayNameFor(model => model.Description)
+                                        </dt>
+                                        <dd class="col-9">
+                                            @Html.DisplayFor(modelItem => item.Origin.Name)
+                                        </dd>
+                                        <dt class="col-3 text-truncate">
+                                            @Html.DisplayNameFor(model => model.Destination.Name)
+                                        </dt>
+                                        <dd class="col-9">
+                                            @Html.DisplayFor(modelItem => item.TransactionDate)
+                                        </dd>
+                                        <dt class="col-3 text-truncate">
+                                            @Html.DisplayNameFor(model => model.TransactionStatus.Name)
+                                        </dt>
+                                    </dl>
+                                </p>
+                            </figcaption>
+                        </figure>
+                        <div class="card-footer">
+                            
+                            <a asp-action="Incoming" asp-controller="TransactionItems" asp-route-TransactionID="@item.ID">[ View Details ]</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="d-none d-lg-block">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="submit" name="actionButton" value="Type" class="btn btn-link" />
+                        </th>
+                        <th>
+                            <input type="submit" name="actionButton" value="Description" class="btn btn-link" />
+                        </th>
+                        <th>
+                            <input type="submit" name="actionButton" value="Origin" class="btn btn-link" />
+                        </th>
+                        <th>
+                            <input type="submit" name="actionButton" value="Destination" class="btn btn-link" />
+                        </th>
+                        <th>
+                            <input type="submit" name="actionButton" value="Date" class="btn btn-link" />
+                        </th>
+                        <th>
+                            <input type="submit" name="actionButton" value="Status" class="btn btn-link" />
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TransactionType.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Origin.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Destination.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TransactionDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TransactionStatus.Name)
+                            </td>
+                            <td>
+
+
+
+                                <a asp-action="Incoming" asp-controller="TransactionItems" asp-route-TransactionID="@item.ID">[ View Details ]</a>
+                                
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <partial name="_PagingNavBar" />
+</form>

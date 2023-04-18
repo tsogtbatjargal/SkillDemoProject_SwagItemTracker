@@ -1,0 +1,235 @@
+﻿@{
+    ViewData["Title"] = "Home";
+
+}
+
+@*Resources*@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://kit.fontawesome.com/49caa8d480.js" crossorigin="anonymous"></script>
+
+<div class="container pt-5 pb-3">
+    <div class="row">
+        <div class="col">
+            <div class="card border border-light">
+                <a href="@Url.Action("Create","Items")" class="btn btn-primary stretched-link">
+                    <div class="card-body">
+                        <i class="fas  fa-boxes-packing fa-3x"></i>
+                        <p class="card-text"><h5>Add Product</h5></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col mb-3">
+            <div class="card">
+                <a href="@Url.Action("Create","StockIn")" class="btn btn-primary stretched-link">
+                <div class="card-body">
+                        <i class="fas fa-file-signature fa-3x"></i>
+                        <p class="card-text"><h5>Add Stock Item</h5></p>
+                </div>
+                </a>
+            </div>
+        </div>
+        <div class="col mb-3">
+            <div class="card">
+                <a href="@Url.Action("Create","Events")" class="btn btn-primary stretched-link">
+                    <div class="card-body">
+                        <i class="fas  fa-calendar-days  fa-3x"></i>
+                        <p class="card-text"><h5>Add Event</h5></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col mb-3">
+            <div class="card">
+                <a href="@Url.Action("Create","Transactions")" class="btn btn-primary stretched-link">
+                    <div class="card-body">
+                        <i class="fas  fa-arrow-right-arrow-left  fa-3x"></i>
+                        <p class="card-text"><h5>Transfer Item</h5></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col mb-3">
+            <div class="card">
+                <a href="@Url.Action("GenerateBarcode","Reports")" class="btn btn-primary stretched-link">
+                    <div class="card-body">
+                        <i class="fas fa-tags fa-3x"></i>
+                        <p class="card-text"><h5>Barcodes</h5></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col mb-3">
+            <div class="card">
+                <a href="@Url.Action("Index","Reports")" class="btn btn-primary stretched-link">
+                    <div class="card-body">
+                        <i class="fas fa-table fa-3x"></i>
+                        <p class="card-text"><h5>Reports</h5></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+            <div style="display: flex; flex-wrap: nowrap; align-items: center;">
+            <select class="form-select" id="branchFilter">
+            @foreach (var item in ViewBag.Branches)
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+            </select>
+            <a href="@Url.Action("LowInStock","Home")" class="btn btn-primary" style="margin-left: 10px">Details</a>
+            </div>
+                <h5 class="card-title" style="text-align:center"><b>Low in Stock</b></h5>
+                <div style="max-height: 250px; overflow-y: auto;">
+                <table class="table">
+                        <thead style="text-align:center; position: sticky; top: 0; background-color: #fff;">
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Minimum</th>
+                            <th scope="col">Quantity</th>
+                            @*<th scope="col">%</th>*@
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center;">
+                        
+                         @foreach(var item in ViewBag.TableItem)
+                        {
+                                <tr>
+                                    <td>@item.ItemName</td>
+                                    <td>@item.MinLevel</td>
+                                    <td>@item.TotalStock</td>
+                                    @*<td>@item.Percentage.ToString("P")</td>*@
+                                </tr>
+
+                        }
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title" style="text-align:center"><b>Expense Categories</b></h5>
+                <div>
+                    <canvas id="PieChart" style="position: relative; height:100vh; width:80vw"></canvas>
+                </div>
+
+                <script>
+                    
+                    var pieC = document.getElementById('PieChart');
+                    var pieLabel = @Html.Raw(Json.Serialize(ViewBag.PieLabel));
+                    var pieValue = @Html.Raw(Json.Serialize(ViewBag.PieValue));
+                    var pieValueWithSymbol = pieValue.map(function (val) {
+                        return "$" + val.toFixed(2);
+                    });
+
+                    new Chart(pieC, {
+                        type: 'pie',
+                        data: {
+                            labels: pieLabel,
+                            datasets: [{
+                                label: 'Expenses',
+                                data: pieValue,
+                                formattedData: pieValueWithSymbol,
+                                borderWidth: 1,
+                                backgroundColor: [
+                                    '#ff7f0e',
+                                    '#1f77b4',
+                                    '#2ca02c',
+                                    '#9467bd',
+                                    '#d62728',
+                                ]
+                            }]
+                        },
+                        options: {
+                            tooltips: {
+                                callbacks: {
+                                    label: function (tooltipItem, data) {
+                                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                                        var currentValue = dataset.formattedData[tooltipItem.index];
+                                        return currentValue;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title" style="text-align:center"><b>Branch Expenses </b></h5>
+                <canvas id="BarChart" style="position: relative; height:100vh; width:80vw"></canvas>
+            </div>
+
+            <script>
+                var ctx = document.getElementById('BarChart');
+                var barLabel = @Html.Raw(Json.Serialize(ViewBag.BarLabel));
+                var barValue = @Html.Raw(Json.Serialize(ViewBag.BarValue));
+                var barValueWithSymbol = barValue.map(function (val) {
+                    return "$" + val.toFixed(2);
+                });
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: barLabel,
+                        datasets: [{
+                            label: 'Expenses',
+                            data: barValue,
+                            formattedData: barValueWithSymbol,
+                            borderWidth: 1,
+                            backgroundColor: [
+                                    '#ff7f0e',
+                                    '#1f77b4',
+                                    '#2ca02c',
+                                    '#9467bd',
+                                    '#d62728',
+                            ]
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function (tooltipItem, data) {
+                                    var dataset = data.datasets[tooltipItem.datasetIndex];
+                                    var currentValue = dataset.formattedData[tooltipItem.index];
+                                    return currentValue;
+                                }
+                            }
+                        }
+                    }
+                });
+            </script>            
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var currentBranchID = '@ViewBag.CurrentBranchID';
+        $('#branchFilter').val(currentBranchID);
+        $('#branchFilter').change(function () {
+            var selectedBranchID = $('#branchFilter').val();
+            window.location.href = '/Home/Index?branch=' + selectedBranchID;
+        });
+    });
+</script>

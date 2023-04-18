@@ -1,0 +1,83 @@
+﻿@model caa_mis.Models.Bulk
+
+@{
+    ViewData["Title"] = "Release";
+    IEnumerable<caa_mis.Models.BulkItem> Items = (IEnumerable<caa_mis.Models.BulkItem>)ViewBag.Items;//(caa_mis.Models.TransactionItem)ViewBag.Items;
+}
+
+<h1>Release</h1>
+
+<h3>Are you sure you want to release this Initial Inventory for Branch @Model.Branch.Name?</h3>
+<p>Releasing this record will reset the branch's inventory.'</p>
+<form asp-action="Release">
+    <input type="hidden" asp-for="@Model.ID" />
+    <input type="submit" value="Release" class="btn btn-primary" />
+    <a asp-action="Index" asp-controller="BulkItems" asp-route-TransactionID="@Model.ID" class="btn btn-danger">Back to Details Page</a>
+</form>
+<hr />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6">
+            <dl class="row">
+                <dt class="col-md-4">
+                    Branch
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Branch.Name)
+                </dd>
+                <dt class="col-md-4">
+                    Status
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.TransactionStatus.Name)
+                </dd>
+            </dl>
+        </div>
+        <div class="col-6">
+            <dl class="row">
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Date)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Date)
+                </dd>
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Employee.FullName)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Employee.FullName)
+                </dd>
+
+            </dl>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+            <label class="col-form-label">SKU</label>
+        </div>
+        <div class="col-sm">
+            <label class="col-form-label">Product Name</label>
+        </div>
+        <div class="col-sm">
+            <label class="col-form-label">Quantity</label>
+        </div>
+    </div>
+
+    @foreach (var item in Items)
+    {
+        <div class="row">
+            <div class="col-sm">
+                <label class="col-form-label-sm">@Html.DisplayFor(modelItem => item.Item.SKUNumber)</label>
+            </div>
+            <div class="col-sm">
+                <label class="col-form-label-sm"> @Html.DisplayFor(modelItem => item.Item.Name)</label>
+            </div>
+            <div class="col-sm">
+                <label class="col-form-label-sm">@Html.DisplayFor(modelItem => item.Quantity)</label>
+            </div>
+        </div>
+    }
+
+</div>
