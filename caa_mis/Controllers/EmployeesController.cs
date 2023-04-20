@@ -94,7 +94,9 @@ namespace caa_mis.Controllers
                     var user = new IdentityUser
                     {
                         UserName = employee.Email,
-                        Email = employee.Email
+                        Email = employee.Email,
+                        EmailConfirmed = true  // Set EmailConfirmed to true here
+
                     };
                     var result = await _userManager.CreateAsync(user, defaultPassword);
                     if (result.Succeeded)
